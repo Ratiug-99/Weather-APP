@@ -10,7 +10,7 @@ data class Location(
     val typeLocation : String? = "N/A Name Location",
 
     @SerializedName("latt_long")
-    val coordinateLocation : Float? = 0.0f,
+    val coordinateLocation : String? = "",
 
     @SerializedName("woeid")
     val woeidLocation : Int? = 0,

@@ -4,14 +4,14 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ApiClient {
-    companion object {
-        private const val TAG = "DBG | ApiClient"
-        private const val BASE_URL = "https://www.metaweather.com/api/"
-    }
+object ApiClient {
+
+    private const val TAG = "DBG | ApiClient"
+    private const val BASE_URL = "https://www.metaweather.com/api/"
 
     private val gson: Gson by lazy {
         Log.d(TAG, "create gson")
@@ -19,8 +19,13 @@ class ApiClient {
     }
 
     private val okHttpClient: OkHttpClient by lazy {
+        Log.d(TAG, "create httpLoggingInterceptor")
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         Log.d(TAG, "create okHttpClient")
-        OkHttpClient.Builder().build()
+        OkHttpClient.Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
     }
 
     private val retrofit : Retrofit by lazy {

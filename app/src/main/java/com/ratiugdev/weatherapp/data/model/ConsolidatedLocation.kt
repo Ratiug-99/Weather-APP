@@ -10,7 +10,7 @@ data class ConsolidatedLocation(
     val typeLocation : String? = "N/A  Location Type",
 
     @SerializedName("latt_long")
-    val coordinateLocation : Float? = 0.0f,
+    val coordinateLocation : String? = "",
 
     @SerializedName("woeid")
     val woeidLocation : Int? = 0,
