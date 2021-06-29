@@ -2,7 +2,6 @@ package com.ratiugdev.weatherapp.ui.view
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.EditText
@@ -10,8 +9,10 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ratiugdev.weatherapp.R
+import com.ratiugdev.weatherapp.adapter.LocationAdapter
 import com.ratiugdev.weatherapp.data.api.ApiClient
 import com.ratiugdev.weatherapp.data.api.ApiHelper
 import com.ratiugdev.weatherapp.ui.base.ViewModelFactory
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mainViewModel: MainViewModel
+    private  var adapter = LocationAdapter(arrayListOf())
 //    private lateinit var resultSearchAdapter: ResultSearchAdapter
 
     private lateinit var recyclerViewResultSearch: RecyclerView
@@ -43,9 +45,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUI() {
         recyclerViewResultSearch = findViewById(R.id.rv_result_search)
+        recyclerViewResultSearch.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = this@MainActivity.adapter
+        }
+
         etSearchLocation = findViewById(R.id.et_search_location)
         pbLoadingResult = findViewById(R.id.pb_loading_search_location)
-
     }
 
     private fun setupListeners() {
@@ -63,24 +69,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObserver() {
 
-        mainViewModel.listResultSearch.observe(this, {
+        mainViewModel.listResultSearch.observe(this, { it ->
             it?.let { resource ->
                 when (resource.status) {
                     LOADING -> {
-                        pbLoadingResult.visibility = VISIBLE
-                        recyclerViewResultSearch.visibility = GONE
                         Log.d(TAG, "setupObserver searchLocationByName LOADING")
+                        pbLoadingResult.visibility = VISIBLE
+//                        recyclerViewResultSearch.visibility = GONE
                     }
                     SUCCESS -> {
+                        Log.d(TAG, "setupObserver searchLocationByName SUCCESS ${it.data}")
                         pbLoadingResult.visibility = GONE
                         recyclerViewResultSearch.visibility = VISIBLE
-
-                        Log.d(TAG, "setupObserver searchLocationByName SUCCESS \n ${it.data}")
+                        it.data?.let {
+                            adapter.swap(it)
+                        }
                     }
                     ERROR -> {
+                        Log.d(TAG, "setupObserver searchLocationByName ERROR - ${it.message}")
                         pbLoadingResult.visibility = GONE
                         recyclerViewResultSearch.visibility = GONE
-                        Log.d(TAG, "setupObserver searchLocationByName ERROR - ${it.message}")
                     }
                 }
             }
