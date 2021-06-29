@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackgroundCardView">#1C1C1C</color>
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorTextHint">#B3B3B3</color>
+</resources>
